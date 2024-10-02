@@ -1,0 +1,13 @@
+- nagios:
+    drs:
+      usr: <username>
+      pswd: <password>
+      url: <ip/fqdn>
+    dev:
+      usr: <username>
+      pswd: <password>
+      url: <ip/fqdn>
+    prd:
+      usr: <username>
+      pswd: <password>
+      url: <ip/fqdn>
