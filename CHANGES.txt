@@ -1,0 +1,7 @@
+#version 0.0.2
+#1. Added option to pretty print the query result json (-p)
+#2. Extended result display funtion to print the type of the result if not a dict.
+#3. Reduced the valid time of the authentication session to 1 minute.
+
+#vesion 0.0.1
+#1. Initial Release

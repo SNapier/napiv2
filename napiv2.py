@@ -1,4 +1,4 @@
-import requests, argparse, os, yaml
+import requests, argparse, os, yaml, json
 
 #DEAL WITH THE SELF SIGNED NAGIOS SSL
 from urllib3.exceptions import InsecureRequestWarning
@@ -9,7 +9,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 #SCRIPT DEFINITION
 cname = "napiv2.py"
-cversion = "0.0.1"
+cversion = "0.0.2"
 
 #WHERE IS THE SCRIPT RUNNING
 appPath = os.path.dirname(os.path.realpath(__file__))
@@ -33,7 +33,8 @@ def nagiosxiAuthAPI(crds):
     #DATA PAYLOAD
     d = {
         "username" : crds["un"],
-        "password" : crds["pw"]
+        "password" : crds["pw"],
+        "valid_min": "1" 
     }
     myurl = 'https://{}/nagiosxi/api/v1/authenticate?'.format(crds["url"])
     tkn = False
@@ -95,6 +96,13 @@ if __name__ == "__main__" :
         default=None,
         help="String(nagiosxi_lmtd_query): A manually formatted limited query string passed to the endpoint class."
     )
+    #PRETTY PRINT
+    args.add_argument(
+        "-p",
+        required=False,
+        default=None,
+        action="store_true",
+        help="Boolean(True/False): If argument evaluates true, the result json will be printed in human readable format.")
 
     #PARSE ARGS
     meta = args.parse_args()
@@ -157,14 +165,28 @@ if __name__ == "__main__" :
                     
                     #PLAYGROUND FOR RESPONSE
                     else:
-                        #JSON RESULT
-                        print(apirsp)
+                        if meta.p:
+                            #JSON RESULT
+                            print(json.dumps(apirsp, indent=4))
+                        else:
+                            print(apirsp)
 
                 #NOT A DICT? WHY NOT A DICT?
                 else:
-                
-                    #LETS TRY TO STRINGIFY AND PRINT
-                    print(str(apirsp))
+                    #WHAT AM I?
+                    rtype = type(apirsp)
+                    print("RESULT_TYPE={}".format(rtype))
+                    
+                    #I'M A LIST
+                    if rtype == list:
+                        #NICE FORMAT THE LIST
+                        for i in apirsp:
+                            print(i)                       
+                    #STRING, MAYBE?
+                    else:
+                        #STRINGIFY AND PRINT ME
+                        print(str(apirsp))
+
 
         #DIDNT WORK DUDE!
         else:
